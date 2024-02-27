@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Front End Programming / React</title>
+</head>
+
+<body>
+    <!-- We will put our React component inside this div. -->
+    <div id="root"></div>
+
+    <!-- Load React & Babel -->
+    <!-- Note: when deploying, replace "development.js" with "production.min.js". -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6.26.0/babel.min.js"></script>
+
+    <!-- React component code -->
+    <script type="text/babel">
+        function Weather() {
+            const [inputCity, setInputCity] = React.useState("");
+            const [weatherData, setWeatherData] = React.useState({
+                city: "",
+                weather: {},
+                heading: "Weather Search",
+                temperature: "",
+                weatherType: "",
+                imgSrc: " ",
+            });
+
+            const fetchWeather = () => {
+                fetch(`https://api.openweathermap.org/data/2.5/weather?q=${inputCity}&appid=a37a66c4b56fe047941c50db632f68bd`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error("Error with fetch: " + response.statusText);
+                        }
+                        return response.json();
+                    })
+                    .then(newWeather => {
+                        if (newWeather.error) {
+                            throw new Error("Error from API: " + newWeather.error);
+                        }
+
+                        setWeatherData({
+                            city: newWeather.name,
+                            weather: newWeather,
+                            heading: `${newWeather.name} weather`,
+                            temperature: `Temperature: ${newWeather.main && newWeather.main.temp} Kelvin`,
+                            weatherType: `Weather: ${newWeather.weather && newWeather.weather[0].main}`,
+                            imgSrc: `https://openweathermap.org/img/wn/${newWeather.weather && newWeather.weather[0].icon}@2x.png`,
+                        });
+                    })
+                    .catch(err => console.log(err));
+            };
+
+            return (
+                <React.Fragment>
+                    <input placeholder="Enter City" value={inputCity} onChange={(event) => setInputCity(event.target.value)} />
+                    <button onClick={fetchWeather}>Get weather</button>
+                    <h1>{weatherData.heading}</h1>
+                    <p>{weatherData.temperature}</p>
+                    <p>{weatherData.weatherType}</p>
+                    <img src={weatherData.imgSrc} />
+                </React.Fragment>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById("root"));
+        root.render(<Weather />);
+    </script>
+</body>
+
+</html>

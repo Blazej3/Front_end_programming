@@ -59,11 +59,19 @@ function ToDoList() {
     }
   };
 
+  const deleteAllTodos = () => {
+    const confirmed = window.confirm("Are you sure you want to delete all todos?");
+    if (confirmed) {
+      setTodos([]);
+    }
+  };
+
 
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
 
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <h3>My Todolist</h3>
       <Stack direction="row" spacing={2} mt={2} justifyContent="center" alignItems="center">
         <TextField
           label="Description"
@@ -83,31 +91,34 @@ function ToDoList() {
           label="Date"
           value={selectedDate}
 
-          onChange={(date) => { setSelectedDate(date); 
-          const dateString = date.toISOString().split('T')[0]; 
-          setTodo({ ...todo, date: dateString }); }}
+          onChange={(date) => {
+            setSelectedDate(date);
+            const dateString = date.toISOString().split('T')[0];
+            setTodo({ ...todo, date: dateString });
+          }}
 
         />
 
 
         <Button variant="contained" onClick={addToDo}>Add</Button>
-        <Button variant="contained" color="error" onClick={deleteToDo}>Delete</Button>
+        <Button variant="contained" color="error" onClick={deleteToDo}>Delete Todo</Button>
+        <Button variant="contained" color="secondary" onClick={deleteAllTodos}>Delete All</Button>
+
 
       </Stack>
-
-      <div
-        className="ag-theme-material" // applying the grid theme
-        style={{ height: 600, width: 650}} // the grid will fill the size of the parent container
-      >
-        <AgGridReact
-          ref={gridRef}
-          onGridReady={params => gridRef.current = params.api}
-          rowData={todos}
-          columnDefs={colDefs}
-          rowSelection="single"
-        />
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <div className="ag-theme-material" style={{ height: 600, width: 600 }}>
+          <div data-testid="todo-grid-container" className="ag-theme-material" style={{ height: 600, width: 600 }}>
+            <AgGridReact
+              ref={gridRef}
+              onGridReady={params => gridRef.current = params.api}
+              rowData={todos}
+              columnDefs={colDefs}
+              rowSelection="single"
+            />
+          </div>
+        </div>
       </div>
-
     </LocalizationProvider>
   );
 }

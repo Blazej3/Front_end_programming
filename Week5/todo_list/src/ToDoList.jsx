@@ -97,7 +97,7 @@ function ToDoList() {
 
       <div
         className="ag-theme-material" // applying the grid theme
-        style={{ height: 600, width: 650 }} // the grid will fill the size of the parent container
+        style={{ height: 600, width: 650}} // the grid will fill the size of the parent container
       >
         <AgGridReact
           ref={gridRef}
